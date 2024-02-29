@@ -55,4 +55,42 @@ console.log("prova:", process);
       saluta(nomi.persona1)
       saluta("Anna")
       saluta(nomi.persona2)
+
+- I moduli build-in sono dei moduli già presenti in niode senza il bisogno di crearli perchè esistenti di default.
+   Modulo OS (operating system): 
+      Dichiaro la costante e la metto a schermo con un console.log, dopo os. vengono fuori tutte le funzioni build-in associate al modulo os che ci forniscono informazioni utili al sistema operativo della macchina sulla quale stiamo lavorando (es. userInfo, uptime(da quanto tempo è acceso il pc), version, arch).
+
+      const os = require('os')
+
+      console.log(os.userInfo());
+      console.log(os.uptime());
+      console.log(os.version());
+      console.log(os.arch());
+
+      const prova = {
+         nome: os.type(),
+         release: os.release(),
+         memoria: os.totalmem(),
+         disponibile: os.freemem()
+      }
+
+      console.log(prova);
+
+   Modulo PATH che ci permette di lavorare con i percorsi dei file nel pc.
+      Alcune delle info e azioni che possiamo ottenere grazie a Path sono: sep (quale carattere si usa per separare i vari livelli di cartelle nel percorso di un file), join (creare un percorso), basename(ci restituisce il nome base di tutto il path), resolve (ci permette di creare path assoluti).
+
+         const path = require('path');
+         console.log(path.sep);
+
+         const percorsoFile = path.join('/cartella', 'sottocartella', 'prova.txt');
+         console.log(percorsoFile);
+
+         console.log(path.basename(percorsoFile));
+
+         const percorsoAssoluto = path.resolve(__dirname, 'cartella', 'sottocattella', 'prova.txt');
+         console.log(percorsoAssoluto);
 */
+
+
+
+
