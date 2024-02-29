@@ -41,8 +41,9 @@ console.log("prova:", process);
    Possono essere interni --> costruiti da noi all'interno della nostra app;
                   built-in -> presenti di default in node.js;
                   esterni --> quelli installati tramite npm;
-         
-- Costruire i nostri moduli interni e collegarli tramite module.exports e require:
+*/         
+
+/* - Costruire i nostri moduli interni e collegarli tramite module.exports e require:
    Ho creato 2 moduli: nomi.js (dove ho inserite le variabili) e utils.js (dove ho inserito la funzione che gestirà i miei nomi);
    Ho esportato la funzione da utils.js tramite module.exports;
    Ho importato la funzione in index.js tramite require;
@@ -55,8 +56,9 @@ console.log("prova:", process);
       saluta(nomi.persona1)
       saluta("Anna")
       saluta(nomi.persona2)
+*/
 
-- I moduli build-in sono dei moduli già presenti in niode senza il bisogno di crearli perchè esistenti di default.
+/* - I moduli build-in sono dei moduli già presenti in niode senza il bisogno di crearli perchè esistenti di default.
    Modulo OS (operating system): 
       Dichiaro la costante e la metto a schermo con un console.log, dopo os. vengono fuori tutte le funzioni build-in associate al modulo os che ci forniscono informazioni utili al sistema operativo della macchina sulla quale stiamo lavorando (es. userInfo, uptime(da quanto tempo è acceso il pc), version, arch).
 
@@ -82,15 +84,98 @@ console.log("prova:", process);
          const path = require('path');
          console.log(path.sep);
 
-         const percorsoFile = path.join('/cartella', 'sottocartella', 'prova.txt');
+         const percorsoFile = path.join('/cartella', 'prova.txt');
          console.log(percorsoFile);
 
          console.log(path.basename(percorsoFile));
 
-         const percorsoAssoluto = path.resolve(__dirname, 'cartella', 'sottocattella', 'prova.txt');
+         const percorsoAssoluto = path.resolve(__dirname, 'cartella', 'prova.txt');
          console.log(percorsoAssoluto);
 */
 
+/* Il Modulo FS (file system) sincrono:
+      Si può leggere il contenuto di un file(il primo elemento dentro alle parentesi è il percorso del file in questione, il secondo elemento è utf-8 per dare alla macchina l'informazione della lingua da leggere):
+         const {readFileSync, writeFileSync} = require('fs')
 
+         console.log('comincio') // serve per dimostrare che funziona in sincrono
+         const prova = readFileSync('./cartella/prova.txt', 'utf-8');
+         const ciao = readFileSync('./cartella/ciao.txt', 'utf-8');
 
+         console.log(prova)
+         console.log(ciao)
+         console.log('ho finito') // serve per dimostrare che funziona in sincrono
+         console.log('passo al prossimo') // serve per dimostrare che funziona in sincrono
 
+      Si può scrivere all'interno di un file(il primo elemento è sempre il path, il secondo elemento è quello che dobbiamo aggiungere al file)
+         Per override:
+            const {readFileSync, writeFileSync} = require('fs')
+
+            writeFileSync('./cartella/prova.txt', 'bella')
+         
+         Per aggiungere si usa un terzo elemento che è {flag: 'a'}:
+            const {readFileSync, writeFileSync} = require('fs')
+
+            writeFileSync('./cartella/prova.txt', 'bella', {flag: 'a'})
+
+         Per scrivere in un file che non esiste (il path è di un file che attualmente non esiste):
+            const {readFileSync, writeFileSync} = require('fs')
+
+            writeFileSync('./cartella/bella.txt', 'bella')
+*/
+
+/* Il modulo FS asincrono:
+      Ha la stessa logica del sync ma esegue le operazione senza bloccare il thread ma delegando alla macchina l'esecuzione delle richieste mentre continua ad eseguire il resto del codice. Questo risultato si ottiene grazie alle funzioni di callback (comunichiamo alla macchina ciò che deve fare, mentre lei esegue noi continuiamo a leggere il codice, una volta che la macchina ha finito mi rimanda indietro i risultati grazie alla funzione di callback da noi stabilita).
+      Per leggere file in async:
+         const {readFile, writeFile, read} = require('fs')
+
+         readFile('./cartella/prova.txt', 'utf-8', (error, result)=>{
+            if(error){
+               console.log(error);
+               return
+            }
+            const prova = result;
+            console.log(prova);
+            readFile('./cartella/ciao.txt', 'utf-8', (error, result)=>{
+               if(error){
+                  console.log(error);
+                  return
+               }
+               const ciao = result;
+               console.log(ciao);
+            })
+         })
+
+      Per scrivere in file in async:
+         console.log('comincio') // serve per dimostrare che funziona in asincrono
+         const {readFile, writeFile, read} = require('fs')
+
+         readFile('./cartella/prova.txt', 'utf-8', (error, result)=>{
+            if(error){
+               console.log(error);
+               return
+            }
+            const prova = result;
+            console.log(prova);
+            readFile('./cartella/ciao.txt', 'utf-8', (error, result)=>{
+               if(error){
+                  console.log(error);
+                  return
+               }
+               const ciao = result;
+               console.log(ciao);
+               writeFile('./cartella/bella.txt', 'ciao ciaoissimo', (error, result)=>{
+                  if(error){
+                     console.log(error);
+                     return
+                  }
+                  console.log(result);
+                  console.log('ho finito') // serve per dimostrare che funziona in asincrono
+               })
+            })
+         })
+         console.log('passo al prossimo compito'); // serve per dimostrare che funziona in asincrono
+*/
+
+/* Modulo HTTP:
+
+*/
