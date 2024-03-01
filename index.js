@@ -40,7 +40,7 @@ console.log("prova:", process);
    Sono i pacchetti o dipendenze javascript che compongono l'applicazione. 
    Possono essere interni --> costruiti da noi all'interno della nostra app;
                   built-in -> presenti di default in node.js;
-                  esterni --> quelli installati tramite npm;
+                  esterni --> quelli installati tramite npm (node package manager);
 */         
 
 /* - Costruire i nostri moduli interni e collegarli tramite module.exports e require:
@@ -177,5 +177,45 @@ console.log("prova:", process);
 */
 
 /* Modulo HTTP:
+      Serve per creare dei web server (cioè che è sempre online).
+      Esempio utilizzo:
+         const http = require('http'); //Creiamo http;
+
+         const server = http.createServer((req, res)=> { //Creiamo il nostro server che avrà una funzione di callback con una richiesta (req) alla quale seguirà una risposta (res);
+            res.write("Benvenuto sul nostro sito"); // Questa è la risposta;
+            res.end(); // Qui finisce la risposta;
+         })
+
+         server.listen(3000); // Mettiamo in ascolto il server creato sulla porta locale 3000;
+
+      Esempio completo con req e res:
+         const http = require('http'); //Creiamo http;
+
+         const server = http.createServer((req, res)=> { //Creiamo il nostro server che avrà una funzione di callback con una richiesta (req) alla quale seguirà una risposta (res);
+            if(req.url === "/"){ // Creiamo la nostra richiesta che è un url vuoto ---> localhost:300
+               res.end("Benvenuti sul mio sito"); // Segue la risposta
+            } else if(req.url === "/veselin"){ // Creiamo altra richiesta con url di base + /veselin ---> localhost:3000/veselin
+               res.end("Il profilo di Veselin"); // e la sua relativa risposta
+            }
+            res.end(`<h1>Errore</h1>
+            <p>Torna alla <a href="/">Home</a>, la pagina non esiste.</p>
+            `) // Per tutte le altre richieste questa sarà la risposta.
+         })
+
+         server.listen(3000); // Mettiamo in ascolto il server creato sulla porta locale 3000 -- localhost:3000
+*/
+
+/* Il Nodemon:
+      - è un pacchetto che resta sempre in ascolto ed ogni volta che effettuaiamo dei cambiamenti gli esegue senza dover ogni volta rieseguire il nostro file (come liveserver).
+      - installiamo Nodemon con: npm install nodemon --save-dev;
+        modifichiamo il file package.json aggiungendo lo script: "start": "nodemon index.js"
+        avviamo nodemon con: npm start
+      - la differenza tra dependencies e devDependencies è che:
+         senza le dependencies il nostro progetto non può funzionare perchè non riesce a leggere alcune parti del codice;
+         le devDependencies invece le usiamo solo noi sulla nostra macchina, non servono ad altri programmatori del nostro progetto e non servono per la versione da pubblicare;
+         ESEMPIO: posso fare a meno di nodemon (che è una devDependencie) ma non posso fare a meno di bootstrap (che è una dependencie) perchè il codice non verrebbe letto;
+*/
+
+/* Gli Event Loop:
 
 */
