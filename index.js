@@ -217,5 +217,57 @@ console.log("prova:", process);
 */
 
 /* Gli Event Loop:
+      L'event loop è il ciclo degli eventi che caratterizza node.
+      E' single thread, async e non-blocking.
+      Ha 2 caratteristiche: event queue ---> la coda degli eventi e cioè l'insieme delle richieste degli utenti;
+                            call stack: è l'insieme delle callback;
+*/
+
+/* Gli Event Emitters: 
+      Event Driven Programming (client/sevrer) ---> programmazione guidata dall'uso più o meno massivo degli eventi.
+      - usa i metodi on e emit; on è in ascolto di una particolare informazione mentre emit fa partire le informazioni; 
+      - come passare i valori? Inserendoli come elementi della funzione di callback.
+
+      const EventEmitter = require('events'); // importo il modulo "events";
+      const customEmitter = new EventEmitter(); // creo un eventEmitter (emittente di evento);
+
+      customEmitter.on('messaggio', (nome, anno)=>{
+         console.log(`Ciao sono ${nome} e sono partito nel ${anno}.`);
+      }); // vuol dire: customEmitter, ci iscriviamo all'evento messaggio. Cioè: ogni volta che parte l'evento messaggio noi siamo in ascolto e di conseguenza agiamo con un funzione di callback che in questo caso è il nostro console.log
+
+      customEmitter.on('messaggio', ()=>{
+         console.log("Mi sono trasferito dalla Bulgaria all'Italia.");
+      }); // possiamo essere iscritti allo stesso evento con funzioni di callback differenti;
+
+      customEmitter.emit('messaggio', 'Veselin', 2006); // emettiamo l'evento messaggio che verrà catturato dal metodi on e farà partire il nostro console.log;
+
+      //N.B. Si dichiara prima il metodo on e poi il metodo emit, sempre!
+*/
+
+/* Gli Streams: 
+      Lo stream è il flusso costante di dati divisi in vari pezzi (detti chanck). Cosi leggiamo una parte di codice, poi un altro e cosi via.
+      Si utilizzano per gestire i file molto pesanti.
+
+         const {writeFileSync} = require('fs'); // Creiamo un file pesante:
+         for (let i = 0; i < 10000; i++) {
+            writeFileSync('./filegrande.txt', `Ciao riga numero ${i}\n`, { flag: 'a' });
+         }
+------------------------------------------------------------------------------------------------
+         const { readFileSync } = require('fs'); // Leggiamo il file senza stream:
+
+         const filegrande = readFileSync('./filegrande.txt');
+
+         console.log(filegrande); // Il file viene letto tutto insieme e pesa 510k quindi è faticoso e lento per la macchina da leggere, rischiamo di bloccare i processi.
+------------------------------------------------------------------------------------------------
+         const { createReadStream } = require('fs'); // Leggiamo il file con stream:
+
+         const stream = createReadStream('./filegrande.txt');
+
+         stream.on('data', (result)=> {
+            console.log(result); // Il file viene suddiviso in tanti chanck che pesano circa 60k ognuno e quindi vengono processati un pò alla volta sensa bloccare i processi.
+         })
+*/
+
+/* Come funzionano le richieste HTTP:
 
 */
