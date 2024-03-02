@@ -52,6 +52,18 @@
 */
 
 /* API vs SRR:
+    -API: è un'interfaccia per comunicare con il Data Base (tramite json, res.json); --> vengono inviati dei dati;
+    -SSR: server side rendering (template, ejs, res.render); --> viene inviata una pagina intera;
+
+    API: sono il tramite che sta tra il client e il data base.
+        client --> richiesta dati --> API --> interroga il data base
+        API --> ottiene i dati --> li invia al client --> il client mostra i dati richiesti e ricevuti grazie ad API
+
+    SSR: 
+        client --> richiede una pagina (es. pagina personale dopo Login) --> server --> renderizza pagina completa html --> cliente la mostra a schermo
+*/
+
+/* Usare JSON per passare i dati:
 
 */
 
