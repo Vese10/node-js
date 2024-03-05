@@ -214,6 +214,188 @@
 */
 
 /* Middleware:
+        Sono delle funzioni che vengono eseguite tra la richiesta e la risposta. Ci permettono di fare quello che vogliamo in quel periodo intermedio. req => middleware => res
+        Per poter andare oltre la funzione di middleware dopo averla eseguita abbimao bisogno del parametro next(). Senza questo parametro la nostra app rimane bloccata nella funzione di middleware e non ci restituisce la risposta. Dunque: req => middleware => next() => res
+            const express = require('express')
+            const app = express()
+
+            const middlewareProva = (req, res, next) => { // Dichiaro la funzione che voglio eseguire dopo aver fatto la richiesta e prima che arrivi la risposta.
+                const {method, url} = req
+                const time = new Date().getMinutes()
+                console.log(method, url, time)
+                next() // Inseriamo il parametro next() in modo da poter ricevere la risposta.
+            }
+
+            app.get('/', middlewareProva, (req, res) => {
+                res.send("Homepage")
+            })
+
+            app.get('/about', middlewareProva, (req, res) => {
+                res.send("About")
+            })
+
+            app.listen(3000)
+
+        Per avere un codice più pulito rendiamo il middleware un modulo:
+            const express = require('express')
+            const app = express()
+            const middlewareProva = require('./middlewareprova') // Importiamo il modulo appena creato e l'app funziona esattamente come sopra.
+
+            app.get('/', middlewareProva, (req, res) => {
+                res.send("Homepage")
+            })
+
+            app.get('/about', middlewareProva, (req, res) => {
+                res.send("About")
+            })
+
+            app.listen(3000)
+
+        - app.use è un modo per rendere il modulo middleware da noi creato scalabile ed applicabile ad ogni nostro app.get senza doverlo trascrivere ogni volta per:
+            const express = require('express')
+            const app = express()
+            const middlewareProva = require('./middlewareprova') // Importiamo il modulo appena creato e l'app funziona esattamente come sopra.
+
+            app.use(middlewareProva) // Inseriamo il modulo con app.use, che scritto così funzionerà su tutti i nostri end point:
+
+            app.get('/', (req, res) => { // Cancelliamo il middleware da qui;
+                res.send("Homepage")
+            })
+
+            app.get('/about', (req, res) => { // Cancelliamo il middleware da qui;
+                res.send("About")
+            })
+
+            app.get('/persone/ciao', (req, res) => {
+                res.send("persone")
+            })
+
+            app.get('/persone/miao', (req, res) => {
+                res.send("persone miao")
+            })
+
+            app.listen(3000)
+
+        - app.use si può applicare anche solo ad alcuni degli end point che abbiamo in base alla nostra necessità:
+            const express = require('express')
+            const app = express()
+            const middlewareProva = require('./middlewareprova') // Importiamo il modulo appena creato e l'app funziona esattamente come sopra.
+
+            app.use('/persone', middlewareProva) // Scritto così funzionerà solo per i percorsi da noi scelti ed inseriti.
+
+            app.get('/', (req, res) => {
+                res.send("Homepage")
+            })
+
+            app.get('/about', (req, res) => {
+                res.send("About")
+            })
+
+            app.get('/persone/ciao', (req, res) => { // middleware funziona qui perchè il percorso inizia con il percorso da noi dichiarato '/persone'
+                res.send("persone")
+            })
+
+            app.get('/persone/miao', (req, res) => { // middleware funziona qui perchè il percorso inizia con il percorso da noi dichiarato '/persone'
+                res.send("persone miao")
+            })
+
+            app.listen(3000)
+
+        - Si possono anche inserire più funzioni di middleware all'interno dello stesso end point. Lo possiamo fare utilizzando un array di funzioni di middleware:
+            const express = require('express')
+            const app = express()
+            const middlewareProva = require('./middlewareprova')
+            const auth = require('./authmiddleware')
+
+            app.use([middlewareProva, auth]) // Inseriamo nell'array più di una funzione
+
+            app.get('/', (req, res) => {
+                res.send("Homepage")
+            })
+
+            app.get('/about', (req, res) => {
+                res.send("About")
+            })
+
+            app.get('/persone/ciao', (req, res) => { 
+                res.send("persone")
+            })
+
+            app.get('/persone/miao', (req, res) => { 
+                res.send("persone miao")
+            })
+
+            app.listen(3000)
+        
+        Si può interrompere il flusso di req => middleware => res utilizzando una funzione di middleware con il condizionale. Nel nostro caso login.js:
+            const express = require('express')
+            const app = express()
+            const middlewareProva = require('./middlewareprova')
+            const auth = require('./authmiddleware')
+            const login = require('./login')
+
+            app.use(middlewareProva) // Usiamo questo modulo su tutti i nostri end point.
+
+            app.get('/', (req, res) => {
+                res.send("Homepage")
+            })
+
+            app.get('/about', (req, res) => {
+                res.send("About")
+            })
+
+            app.get('/area', login, (req, res) => {  // Usiamo il modulo login solo qui. Se il nostro url è localhost:3000/area avremo come risposta "Non autorizzato" come stabilito nel modulo login. Se però abbiamo l'url localhost:3000/area?user=Luca come risposta avremo quella sotto ("area"), esattamente come stabilito nel modulo login.
+                res.send("area")
+            })
+
+            app.get('/persone/miao', (req, res) => { 
+                res.send("persone miao")
+            })
+
+            app.listen(3000)
+        
+        I middleware possono essere:
+            - custom: e cioè creati da noi (es. login, middlewareprova, authmiddleware);
+            - di express: es. app.use(express.static('/public'))
+            - di terze parti:
+                 npm install *****
+                 const xyz = require('*****')
+*/
+
+/* Postman Introduzione:
+        è un programma da usare in back-end al posto del browser che ha la capacità di inviare una richiesta http ed ottenere una risposta senza avere bisogno di una interfaccia client da restituire effettivamente a schermo.
+            const express = require('express')
+            const app = express()
+            const persone = require('./persone')
+
+            app.use(express.json()) // Autorizziamo express ad accettare i json in entrata come delle risposte.
+
+            app.get('/', (req, res) => {
+                res.send("Homepage")
+            })
+
+            app.get('/persone', (req, res) => {
+                res.send(persone)
+            })
+
+            app.post('/', (req, res) => {
+                console.log(req.body)
+                res.send("ok post")
+            })
+
+            app.put('/', (req, res) => {
+                console.log(req.body)
+                res.send("ok put")
+            })
+
+            app.delete('/', (req, res) => {
+                res.send("ok delete")
+            })
+
+            app.listen(3000)
+*/
+
+/* Esercizio 1:
+            
 
 */
-       
