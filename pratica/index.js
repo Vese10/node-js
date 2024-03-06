@@ -395,7 +395,26 @@
             app.listen(3000)
 */
 
-/* Esercizio 1:
-            
+/* Esercizio:
+        GET/POST/PUT/DELETE:
 
 */
+
+const express = require('express')
+const app = express()
+const {persone} = require('./persone')
+
+app.get('/api/persone', (req, res) => { 
+    res.status(200).json({success: true, data: persone}) // Richiediamo come risposta tutto il contenuto del file persone.js
+})
+
+app.get('/api/persone/:id', (req, res) => {
+    const {id} = req.params // Alla richiesta del parametro id
+
+    const persona = persone.find(
+        (persona) => persona.id === id // Persona corrisponde all'id inserito
+    )
+    res.json(persona) // Rispondi con il parametro persona dichiarato sopra
+})
+
+app.listen(3000)
