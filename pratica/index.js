@@ -443,5 +443,8 @@
 */
 
  /* MongoDB:
- 
+        Open CMD:
+            - mongosh
+            - show dbs
+            - use mydbname
  */
