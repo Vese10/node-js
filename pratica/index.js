@@ -398,23 +398,46 @@
 /* Esercizio:
         GET/POST/PUT/DELETE:
 
+    const express = require('express')
+    const app = express()
+    const {persone} = require('./persone')
+
+    app.use(express.json()) // Usiamo la funzione di middleware per fare in modo che sia in grado di capire cosa stiamo facendo con POST
+
+    app.get('/api/persone', (req, res) => { 
+        res.status(200).json({success: true, data: persone}) // Richiediamo come risposta tutto il contenuto del file persone.js
+    })
+
+    app.get('/api/persone/:id', (req, res) => {
+        const {id} = req.params // Alla richiesta del parametro id
+
+        const persona = persone.find(
+            (persona) => persona.id === id // Persona corrisponde all'id inserito
+        )
+        res.json(persona) // Rispondi con il parametro persona dichiarato sopra
+    })
+
+    app.post('/api/persone', (req, res) => { // POST
+        console.log(req.body)
+        const persona = req.body // La richiesta al body è la nostra nuova persona da POSTare
+        persone.push(persona) // Nel nostro json persone inseriamo la nostra nuova persona
+        res.status(200).json({success: true, data: persone}) //Questa è la risposta che deve arrivarci dal server e le persone del nostro file json devono essere una in più, comprensive della persona appena inserita con POST
+    })
+
+    app.put('/api/persone/:id', (req, res) => { // PUT per modificare un dato
+        const { id } = req.params // id è uguale alla richiesta del parametro in questione
+        const persona = req.body // persona è uguale a tutto il body
+        persone[Number(id) - 1] = persona // la persona è uguale all'index dell'array delle persone (se vogliamo l'id numero 1 dobbiamo prendere l'index 0 e cosi via)
+        persone[Number(id) - 1] = persona.nome // Per modificare il nome della persona e non tutta la persona
+        res.status(200).json({success: true, data: persone})
+    })
+
+    app.delete('/api/persone/:id', (req, res) => { // DELETE
+        const { id } = req.params
+        const index = persone.findIndex(persona => persona.id === id) // Prendiamo la persona che ha l'id che ci è stato richiesto
+        persone.splice(index,1) // Dal file persone togli l'elemento index richiesto e partendo da questo elemento ne rimuovi salamente 1 e cioè l'elemento stesso.
+        res.status(200).json({seccess: true, data: persone})
+    })
+
+    app.listen(3000)
 */
-
-const express = require('express')
-const app = express()
-const {persone} = require('./persone')
-
-app.get('/api/persone', (req, res) => { 
-    res.status(200).json({success: true, data: persone}) // Richiediamo come risposta tutto il contenuto del file persone.js
-})
-
-app.get('/api/persone/:id', (req, res) => {
-    const {id} = req.params // Alla richiesta del parametro id
-
-    const persona = persone.find(
-        (persona) => persona.id === id // Persona corrisponde all'id inserito
-    )
-    res.json(persona) // Rispondi con il parametro persona dichiarato sopra
-})
-
-app.listen(3000)
