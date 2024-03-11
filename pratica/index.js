@@ -447,4 +447,36 @@
             - mongosh
             - show dbs
             - use mydbname
- */
+
+            SELEZIONARE E FILTRARE DATI:
+            - db.utenti.find() ---> elenco elementi db
+            - db.utenti.find().pretty() ---> elenco graficamente più bello e comprensibile
+            - db.utenti.findOne({citta: "Milano"}) ---> restituisci solo un elemento che ha questa caratteristica
+            - operatori di compatazione: 
+                db.utenti.find({eta: {$eq: 21}}) (equal)
+                                      $gt (greater than)
+                                      $gte (greater then and equal
+                                      $in (inside an array)
+                                      $lt (lower than)
+                                      $lte (lower than and equal)
+                                      $ne (all not equal)
+                                      $nin (not insiede an array)
+            - operatori logici:
+                db.utenti.find({$and: [{citta: "Milano"}, {eta:,{$gt: 22}}]})
+                                $not
+                                $nor
+                                $or
+
+            MODIFICARE ED AGGIORNARE DATI:
+            - db.utenti.updateOne({nome: "Luca"}, {$set: {eta: 29, cognome: "Rosso"}})
+                                        |                               |
+                            questo è l'elemento da modificare           |
+                                                    questi sono i campi dell'elemento modificati
+            - db.utenti.updateMany({}, {$inc: {eta: 1}}) ---> incrementa l'eta di tutti di 1
+            - db.utenti.updateMany({nome: "Massimo"}, {$set: {cognome: "Blu", eta: 23, citta: "Roma"}}, {upsert: true}) ---> serve per aggiungere un utente che non esiste
+
+            CANCELLARE I DATI:
+            - db.utenti.deleteOne({nome: "Massimo"}) ---> elimina l'utente Massimo
+            - db.utenti.deleteOne({$and: [{eta: {$gt: 20}}, {citta: "Roma"}]}) ---> elimina l'utente che ha come citta Roma ed eta maggiore di 20 anni
+            - db.utenti.deleteMany({citta: "Milano"}) ---> elimina tutti gli utenti che hanno come citta Milano
+*/
